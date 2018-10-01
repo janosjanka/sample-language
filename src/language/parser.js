@@ -15,7 +15,6 @@
  * https://en.wikipedia.org/wiki/Recursive_descent_parser
  */
 class Parser {
-
     /**
      * Creates a new parser for the specified lexer.
      * @param  {Lexer} lexer The lexical analyzer.
@@ -190,9 +189,9 @@ class Parser {
         // or an End-Of-File (EOF) token. Each parsed argument node will be put
         // into the array 'args'.
         while (true) {
-            // 1. Parse the current argument and add the result to the array.
-            // 2. Is there another argument?
-            // 3. Check whether this is the end of the argument list (;).
+            // * Parse the current argument and add the result to the array.
+            // * Is there another argument?
+            // * Check whether this is the end of the argument list (;).
             argumentList.push(this.parseArgument());
             if (this.token.kind === SyntaxKind.andKeyword) {
                 this.eatToken(SyntaxKind.andKeyword);
@@ -204,65 +203,51 @@ class Parser {
             }
         }
 
-        // Return an AST SyntaxNode representing an argument list
-        // with its arguments.
+        // Return an AST SyntaxNode representing an argument list.
         return new ArgumentListSyntax(argumentList);
     }
 
     /**
-     * Parses a single memorize statement eating all the lexical elements
-     * related to this rule/notion.
+     * Parses a variable declaration statement.
+     * @returns {VarDeclStatement}
      */
     parseVarDeclStatement() {
-        // 1. Eat the keyword "memorizál".
-        // 2. Eat the identifier that represents the name of a constant
-        //    and convert that to an AST SyntaxNode (IdentifierSyntax).
-        // 3. Parse the expression that will be the value of this constant.
-        const memorizeKeyword = this.eatToken(SyntaxKind.letKeyword);
+        const letKeyword = this.eatToken(SyntaxKind.letKeyword);
         const identifier = new IdentifierNameSyntax(this.eatToken(SyntaxKind.identifierToken));
         const expression = this.parseExpression();
 
-        // 4. Eat the semicolon (;) token at the end of the statement.
+        // Eat the semicolon (;) token at the end of the statement.
         this.eatToken(SyntaxKind.semicolonToken);
 
-        // 5. Return an AST SyntaxNode representing a memorize statement
-        //    with its grammar elements ("memorizál", identifier, expression).   
-        return new VarDeclStatement(memorizeKeyword, identifier, expression);
+        // Return an AST SyntaxNode representing a variable declaration statement.
+        return new VarDeclStatement(letKeyword, identifier, expression);
     }
 
     /**
-     * Parses a single order statement eating all the lexical elements
-     * related to this rule/notion.
+     * Parses a command statement.
+     * @returns {CommandStatement}
      */
     parseCommandStatement() {
-        // 1. Eat the keyword "utasít". Each order statement must start with this keyword.
-        // 2. Eat the identifier that represents the name of a function
-        //    and convert that to an AST SyntaxNode (IdentifierSyntax). 
-        // 3. Parse all the function arguments to AST SyntaxNode.
         const orderKeyword = this.eatToken(SyntaxKind.commandKeyword);
         const identifier = new IdentifierNameSyntax(this.eatToken(SyntaxKind.identifierToken));
         const argumentList = this.parseArguments();
 
-        // 4. Eat the semicolon token (;) at the end of the statement.
+        // Eat the semicolon token (;) at the end of the statement.
         this.eatToken(SyntaxKind.semicolonToken);
 
-        // 5. Return an AST SyntaxNode representing an order statement
-        //    order statement with its grammar elements ("utasít", identifier, argumentList).   
+        // Return an AST SyntaxNode representing a command statement.
         return new CommandStatement(orderKeyword, identifier, argumentList);
     }
 
     /**
-     * Parses an arbitrary kind of statements according to what is
-     * the current token's kind.
+     * Parses an arbitrary kind of statements according to what is the current token's kind.
      * @returns {Statement}
      */
     parseStatement() {
         switch (this.token.kind) {
-            // In this case, this will be a memorize statement so we call the parseMemorizeStatement().
             case SyntaxKind.letKeyword:
                 return this.parseVarDeclStatement();
 
-            // In this case, this will be an order statement so we call the parseOrderStatement().
             case SyntaxKind.commandKeyword:
                 return this.parseCommandStatement();
 
@@ -274,27 +259,32 @@ class Parser {
 
     /**
      * Parses a block element { }. Since a block element can be nested into another block
-     * element, we call this function in a recursive way too.
+     * element, we call this function in a recursive manner.
      * @returns {BlockSyntax} 
      */
     parseBlock() {
         const elements = [];
 
-        // 1. Eat the open brace token "{" and skip all white-space characters after it.
-        // 2. Parse all the statements between the curly braces { }.
-        // 3. Eat the close brace token "}" ignoring leading white-space characters.
         this.eatToken(SyntaxKind.openBraceToken);
         while (true) {
-            // 2.1. Exit the 'while' loop because this is the end of this block.
-            // 2.2. Parse the nested block in a recursive way.
-            // 2.3. This is a problem. This means this block has not been terminated.            
-            // 2.4. Parse the statement and add the result to the array 'elements'.
-            if (this.token.kind === SyntaxKind.closeBraceToken) break;
+            // Exit the 'while' loop because this is the end of this block.
+            if (this.token.kind === SyntaxKind.closeBraceToken) {
+                break;
+            }
+
+            // Parse the nested block in a recursive way.
             if (this.token.kind === SyntaxKind.openBraceToken) {
                 elements.push(this.parseBlock());
                 continue;
             }
-            if (this.token.kind === SyntaxKind.endOfFileToken) throw new SyntaxError("Unterminated block.");
+
+            // This means that this block has not been terminated and
+            // we run out of the tokens.
+            if (this.token.kind === SyntaxKind.endOfFileToken) {
+                throw new SyntaxError("Unterminated block.");
+            }
+
+            // Parse as statement.
             elements.push(this.parseStatement());
         }
         this.eatToken(SyntaxKind.closeBraceToken);
@@ -305,26 +295,22 @@ class Parser {
 
     /**
      * Parses the whole program.
+     * @returns {ProgramSyntax}
      */
     parseProgram() {
         this.skipWhiteSpace();
 
-        // 1. Eat the keyword "program" with both lead and trail trivia (white-spaces)
-        // 2. Eat the identifier after the keyword "program".
-        // 3. Eat the block element.
         const programKeyword = this.eatToken(SyntaxKind.programKeyword);
         const identifier = new IdentifierNameSyntax(this.eatToken(SyntaxKind.identifierToken));
         const block = this.parseBlock();
 
-        // 4. Eat the End-Of-File (EOF) token.
+        // Eat the End-Of-File (EOF) token.
         this.eatToken(SyntaxKind.endOfFileToken);
 
         return new ProgramSyntax(programKeyword, identifier, block);
     }
 
-    /**
-     * Skips all of the white-space tokens until it runs out.
-     */
+    /** Skips all of the white-space tokens until it runs out. */
     skipWhiteSpace() {
         while ((this.token.kind === SyntaxKind.whiteSpaceTrivia
             || this.token.kind === SyntaxKind.endOfLineToken)
@@ -333,9 +319,7 @@ class Parser {
         }
     }
 
-    /**
-     * Moves the cursor to the next token within the source text.
-     */
+    /** Moves the cursor to the next token within the source text. */
     nextToken() {
         this.token = this.lexer.next();
         this.skipWhiteSpace();
@@ -343,7 +327,7 @@ class Parser {
 
     /**
      * Eats the expected token and moves to the next token.
-     * @param  {SyntaxKind} syntaxKind
+     * @param {SyntaxKind} syntaxKind
      * @returns {SyntaxToken}
      */
     eatToken(syntaxKind) {
@@ -355,5 +339,4 @@ class Parser {
         this.nextToken();
         return token;
     }
-
 }

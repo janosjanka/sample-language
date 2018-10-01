@@ -10,7 +10,7 @@ const SyntaxKind = {
     endOfLineToken          : 2,      // EOL
     whiteSpaceTrivia        : 3,      // white-spaces
 
-    // Punctuation
+    /* Punctuation */
     openBraceToken          : 100,    // {
     closeBraceToken         : 101,    // }
     openParenToken          : 102,    // (
@@ -21,39 +21,39 @@ const SyntaxKind = {
     asteriskToken           : 107,    // *
     slashToken              : 108,    // /
 
-    // Reserved Words
+    /* Reserved Words */
     programKeyword          : 200,    // program
     commandKeyword          : 201,    // cmd
     letKeyword              : 202,    // let
     andKeyword              : 203,    // and
 
-    // Identifiers
+    /* Identifiers */
     identifierToken         : 300,
     numericLiteralToken     : 301,
     stringLiteralToken      : 302,
 
-    // Names & Type Names
+    /* Names & Type Names */
     identifierName          : 1100,
 
-    // Expressions
+    /* Expressions */
     parenthesizedExpression : 1200,
     argumentList            : 1201,
 
-    // Primary Expressions
+    /* Primary Expressions */
     numericLiteralExpression: 1301,
     stringLiteralExpression : 1302,
 
-    // Unary Expressions
+    /* Unary Expressions */
     unaryPlusExpression     : 1400,
     unaryMinusExpression    : 1401,
 
-    // Binary Expressions
+    /* Binary Expressions */
     addExpression           : 1500,
     subtractExpression      : 1501,
     multiplyExpression      : 1502,
     divideExpression        : 1503,
 
-    // Statements
+    /* Statements */
     program                 : 2000,
     block                   : 2001,
     varDeclStatement        : 2002,
@@ -73,9 +73,7 @@ for (let name in SyntaxKind) {
     SyntaxKind[SyntaxKind[name]] = name;
 }
 
-/**
- * Thrown when an error has occured during parsing.
- */
+/** Thrown when an error has occured during parsing. */
 class SyntaxError {
     constructor(message) {
         this.message = message;
@@ -85,9 +83,7 @@ class SyntaxError {
     }
 }
 
-/**
- * Thrown when an error has occured during emitting.
- */
+/** Thrown when an error has occured during emitting. */
 class EmitterError {
     constructor(message) {
         this.message = message;

@@ -1,0 +1,126 @@
+.cm-s-visual-studio.CodeMirror {
+    position: relative;
+    height: auto;
+    font-family: consolas;
+    border: 1px solid #e8e8e8;
+}
+
+.cm-s-visual-studio pre {
+    line-height: 1.3em;
+}
+
+.cm-s-visual-studio span.cm-meta {
+    color: #ff1717;
+}
+
+.cm-s-visual-studio span.cm-keyword {
+    line-height: 1em;
+    color: #0000ff;
+}
+
+.cm-s-visual-studio span.cm-atom {
+    color: #219;
+}
+
+.cm-s-visual-studio span.cm-number {
+    color: #00650d;
+}
+
+.cm-s-visual-studio span.cm-def {
+    color: #00f;
+}
+
+.cm-s-visual-studio span.cm-variable {
+    color: #000;
+}
+
+.cm-s-visual-studio span.cm-variable-2 {
+    color: #000;
+}
+
+.cm-s-visual-studio span.cm-variable-3 {
+    color: #000;
+}
+
+.cm-s-visual-studio span.cm-property {
+    color: #000;
+}
+
+.cm-s-visual-studio.cm-s-visual-studio-css span.cm-property {
+    color: #ff0000;
+}
+
+.cm-s-visual-studio span.cm-operator {
+    color: #000;
+}
+
+.cm-s-visual-studio span.cm-comment {
+    font-style: italic;
+    color: #006400;
+}
+
+.cm-s-visual-studio span.cm-string {
+    color: #a31515;
+}
+
+.cm-s-visual-studio.cm-s-visual-studio-html span.cm-string {
+    color: #0000ff;
+}
+
+.cm-s-visual-studio span.cm-string-2 {
+    color: #a31515;
+}
+
+.cm-s-visual-studio span.cm-qualifier {
+    color: #555;
+}
+
+.cm-s-visual-studio span.cm-builtin {
+    color: #30a;
+}
+
+.cm-s-visual-studio span.cm-bracket {
+    color: #eee;
+}
+
+.cm-s-visual-studio span.cm-tag {
+    color: #800000;
+}
+
+.cm-s-visual-studio span.cm-attribute {
+    color: #ff0000;
+}
+
+.cm-s-visual-studio span.cm-link {
+    color: #10c;
+}
+
+.cm-s-visual-studio span.cm-error {
+    color: #f00;
+}
+
+.cm-s-visual-studio .CodeMirror-gutters {
+    padding-right: 8px !important;
+    background: #fff !important;
+    border-color: #eee !important;
+}
+
+.cm-s-visual-studio .CodeMirror-linenumber {
+    color: #2b91af !important;
+}
+
+.cm-s-visual-studio .CodeMirror-selected {
+    background: #e7ebf7 !important;
+}
+
+.cm-s-visual-studio .CodeMirror-matchingbracket,
+.cm-s-visual-studio .CodeMirror-matchingtag {
+    background-color: #eaeaf2 !important;
+    outline: none !important;
+    color: #000 !important;
+}
+
+.cm-s-visual-studio .CodeMirror-activeline-background {
+    background: none !important;
+    border: 2px solid #eaeaf2 !important;
+}

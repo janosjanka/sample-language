@@ -1,0 +1,17 @@
+body {
+    font-family: "Roboto", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial;
+    font-size: 1.6em;
+    color: #333;
+    background-color: #eee;
+}
+
+#surface {
+    padding-top: 16px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 4px #aaa;
+}
+
+a {
+    color: #04f;
+}

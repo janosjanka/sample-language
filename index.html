@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>Sample Language</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <link rel="stylesheet" href="lib/google/roboto-font.css" />
+    <link rel="stylesheet" href="lib/google/roboto-mono-font.css" />
+    <link rel="stylesheet" href="lib/jquery/jquery-ui.min.css" />
+    <link rel="stylesheet" href="lib/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="lib/bootstrap/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="lib/codemirror/lib/codemirror.css" />
+    <link rel="stylesheet" href="lib/codemirror/theme/visual-studio.css" />
+    <link rel="stylesheet" href="lib/fancytree/fancytree.min.css" />
+
+    <link rel="stylesheet" href="css/common.css " />
+    <link rel="stylesheet" href="css/language.css " />
+
+    <script type="text/javascript" src="lib/system/system.js" /></script>
+    <script type="text/javascript" src="lib/jquery/jquery.min.js" /></script>
+    <script type="text/javascript" src="lib/jquery/jquery-ui.min.js" /></script>
+    <script type="text/javascript" src="lib/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="lib/codemirror/lib/codemirror.js"></script>
+    <script type="text/javascript" src="lib/codemirror/addon/mode/simple.js"></script>
+    <script type="text/javascript" src="lib/codemirror/mode/javascript/javascript.js"></script>
+    <script type="text/javascript" src="lib/fancytree/fancytree.min.js"></script>
+
+    <script type="text/javascript" src="http://code.responsivevoice.org/responsivevoice.js"></script>
+</head>
+
+<body>
+
+    <!-- Navigation bar at the top of the page -->
+
+    <nav class="navbar navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Sample Language</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="gram.html">Grammar Specification</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page content or body with a tabbed user interface -->
+
+    <div id="surface" class="container">
+        <div class="tab-content">
+
+            <!-- Code Editor Tab -->
+
+            <div class="tab-pane active">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form id="code-editor" action="post">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <div class="btn-group" role="group">
+                                            <button type="submit" class="btn btn-default" name="compile">Compile</button>
+                                            <button type="submit" class="btn btn-success" name="compile_run">Compile &
+                                                Run</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <div id="message-output" class="alert"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <h3>Source Code Editor</h3>
+                                <textarea class="form-control code" type="text" name="code-editor-input" rows="10"
+                                    placeholder="Type your code here..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <h3>Step 3 - Emitter Output<br /><small>Here is the JavaScript language version of the
+                                        syntax tree that is runnable by all of the web browsers 'cause they do not
+                                        understand the Sample language yet :-)</small></h3>
+                                <textarea id="output-code" class="form-control code" type="text" name="expression" rows="10"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3>Step 1 - Lexical Analyzer Output<br /><small>Lexical elements (keywords, identifiers,
+                                literals, punctuation)</small></h3>
+                        <div id="lexer-output" class="code"></div>
+                    </div>
+                    <div class="col-sm-6">
+                        <h3>Step 2 - Syntax Parser Output<br /><small>AST (Abstract Syntax Tree) that was built up from
+                                the lexical elements</small></h3>
+                        <div id="syntax-output" class="code"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+    <script src="src/language/utils.js"></script>
+    <script src="src/language/types.js"></script>
+    <script src="src/language/lexer.js"></script>
+    <script src="src/language/parser.js"></script>
+    <script src="src/language/emitter.js"></script>
+
+    <script src="src/designer/editor.js"></script>
+
+    <script src="src/runtime.js"></script>
+    <script src="src/application.js"></script>
+    <script src="src/bootstrap.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,57 @@
+pre {
+    font-family: "Roboto Mono", "Courier New", Courier, monospace;
+    font-size: inherit;
+    background: none;
+    border: 0;
+}
+
+code, .code {
+    font-family: "Roboto Mono", "Courier New", Courier, monospace;
+    font-size: inherit;
+}
+
+/* Grammar Elements */
+
+.gram-term {
+    font-style: normal;
+    color: #8b0000;
+}
+
+.gram-nonterm {
+    font-style: normal;
+    font-weight: bold;
+    color: #005500;
+}
+
+/* Syntax Elements */
+
+.syn-keyword,
+.syn-keyword > .fancytree-title {
+    font-style: normal;
+    font-weight: bolder;
+    color: #0000ff;
+}
+
+.syn-numericliteraltoken,
+.syn-numericliteraltoken > .fancytree-title {
+    font-style: normal;
+    color: #00650d;
+}
+
+.syn-stringliteraltoken,
+.syn-stringliteraltoken > .fancytree-title {
+    font-style: normal;
+    color: #a31515;
+}
+
+.syn-identifiertoken,
+.syn-identifiertoken > .fancytree-title {
+    font-style: normal;
+    color: green;
+}
+
+.syn-orderstatement,
+.syn-orderstatement > .fancytree-title {
+    font-weight: bold;
+    color: seagreen;
+}

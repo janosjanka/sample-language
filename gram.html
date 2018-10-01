@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>Sample Programming Language</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <link rel="stylesheet" href="lib/google/roboto-font.css" />
+    <link rel="stylesheet" href="lib/google/roboto-mono-font.css" />
+    <link rel="stylesheet" href="lib/jquery/jquery-ui.min.css" />
+    <link rel="stylesheet" href="lib/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="lib/bootstrap/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="lib/codemirror/lib/codemirror.css" />
+    <link rel="stylesheet" href="lib/codemirror/theme/visual-studio.css" />
+    <link rel="stylesheet" href="lib/fancytree/fancytree.min.css" />
+
+    <link rel="stylesheet" href="css/common.css " />
+    <link rel="stylesheet" href="css/language.css " />
+</head>
+
+<body>
+
+    <!-- Navigation bar at the top of the page -->
+
+    <nav class="navbar navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">Sample Language</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="index.html">Code Editor</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page content or body with a tabbed user interface -->
+
+    <div id="surface" class="container">
+        <div class="tab-content">
+            <div id="grammar" class="tab-pane active">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>
+                            We use a set of the <a href="https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form"
+                                target="blank">Extended Backus–Naur Form (EBNF)</a> notations to describe the
+                            syntax/grammar
+                            of the <strong>Sample language</strong>.
+                            <ul>
+                                <li>
+                                    <strong>Terminal Symbols</strong>
+                                    <p>They are enclosed with quotation marks (e.g. <em class="gram-term">"cmd"</em>)
+                                        and
+                                        directly part of the target language as characters of that. For example, the
+                                        word
+                                        "cmd" is a terminal symbol because it is in the language as an existing
+                                        word.</p>
+                                </li>
+                                <li>
+                                    <strong>Non-Terminal Symbols</strong>
+                                    <p> They are marked with a highlighted font style (e.g. <em class="gram-nonterm">identifier</em>)
+                                        and directly not part of the target language. They are simple rules that can be
+                                        substituted
+                                        in other places where they are referred to. Each non-terminal rule should
+                                        define
+                                        what it means in the given language.</p>
+                                </li>
+                            </ul>
+                        </p>
+                        <hr />
+                        <p>
+                            The Sample's grammar defines a non-terminal rule, which is called <em class="gram-nonterm">program</em>,
+                            to outline the shape of a program that can be written in this language. As we can see,
+                            every
+                            program will be started with a terminal symbol <em class="gram-term">"program"</em>, a
+                            keyword
+                            of the language (keywords are reserved language elements and blue colored). Users have to
+                            start
+                            their programs with this word, it is a conceptionally, tied rule of our language, simple
+                            expectation.
+                            In addition, an arbitrary user-defined <em class="gram-nonterm">identifier</em> must follow
+                            this
+                            keyword that gives a name for this program. To mark the beginning and the end of our
+                            programs,
+                            we also added two curly braces to our formal language (it is officially named block; all
+                            <a href="https://en.wikipedia.org/wiki/Statement_(computer_science)" target="blank">statements</a>
+                            (commands) must be placed within these).
+                        </p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>EBNF Grammar Specification</th>
+                                    <th>Sample code that corresponds with the grammar spec.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="width: 50%;">
+                                        <pre><code><em class="gram-nonterm">program</em> = <em class="gram-term">"program"</em> <em class="gram-nonterm">identifier</em>
+          <em class="gram-term">"{"</em>
+              <em class="gram-nonterm">{ statement }</em>
+          <em class="gram-term">"}"</em> ;</code></pre>
+                                    </td>
+                                    <td style="width: 50%;">
+                                        <pre><code><strong class="syn-keyword">program</strong> <em class="syn-identifiertoken">program_neve</em>
+{
+
+}</code></pre>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>
+                            At this point, we have roughly defined the shape of our language and introduced two new
+                            notions (non-terminal rules):
+                            <em class="gram-nonterm">identifier</em> and <em class="gram-nonterm">statement</em>. We
+                            should
+                            explain what these words mean in our language 'cause nobody is a wizard to figure out
+                            these.
+                            To give an explanation for these, we are going to use EBNF symbols again. Let's start with
+                            the
+                            identifier. Question: What do we want to name an identifier in our tiny language? It
+                            usually
+                            means some arbitrary user-defined English name in programming languages that can contain
+                            alphabet
+                            characters (letters), digits, and underscores to make sentences nicer. The only restriction
+                            is
+                            that they must start with an alphabetic character (letter), rather than a digit or
+                            underscore.
+                            In the Sample language we'll extend this notion including all the Hungarian vowels too.
+                        </p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>EBNF <small> { } = zero or infinite repetation of sg. | = or</small></th>
+                                    <th>Generated Sample Language</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="width: 60%">
+                                        <pre><code><em class="gram-nonterm">identifier</em> = <em class="gram-nonterm">letter </em> { <em class="gram-nonterm">letter</em> | <em class="gram-nonterm">digit</em> | <em class="gram-term">"_"</em> } ;</code></pre>
+                                        <pre><code><em class="gram-nonterm">letter</em> = <em class="gram-term">"A" | "Á" | "B" | "C" | "D" | "E" | "É"
+       | "F" | "G" | "H" | "I" | "Í" | "J" | "K"
+       | "L" | "M" | "N" | "O" | "Ó" | "Ö" | "Ő"
+       | "P" | "Q" | "R" | "S" | "T" | "U" | "Ú"
+       | "Ü" | "Ű" | "V" | "W" | "X" | "Y" | "Z"
+       | "a" | "á" | "b" | "c" | "d" | "e" | "é"
+       | "f" | "g" | "h" | "i" | "í" | "j" | "k"
+       | "l" | "m" | "n" | "o" | "ó" | "ö" | "ő"
+       | "p" | "q" | "r" | "s" | "t" | "u" | "ú"
+       | "ü" | "ű" | "v" | "w" | "x" | "y" | "z" ;</em></code></pre>
+                                        <pre><code><em class="gram-nonterm">digit</em> = <em class="gram-term">"0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;</em></code></pre>
+                                    </td>
+                                    <td style="width: 40%">
+                                        <p>According to the grammar rules:</p>
+                                        <ul>
+                                            <li>Valid:</li>
+                                            <li class="alert-success">azonosító_neve</li>
+                                            <li class="alert-success">azonosító_1984</li>
+                                            <li>Not valid:</li>
+                                            <li class="alert-danger">_azonosító_neve</li>
+                                            <li class="alert-danger">1azonosító_neve</li>
+                                        </ul>
+                                        <p>
+                                            In a few words, the first char must be a letter character but all other
+                                            characters can be zero or infinite repetition { }
+                                            of letter or digit or underscore characters. This is what means an
+                                            identifier
+                                            in our language.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>
+                            The next step is to define what the rule 'statement' means. By definition, it means an
+                            action (operation) that performs some
+                            computation. For instance, in our language the keyword "cmd" introduces an command
+                            statement
+                            that must have an identifier naming the called operation therefore the expression "cmd
+                            speak"
+                            means: run the function 'speak' and pass the specified arguments/parameters (e.g. "Hello,
+                            my
+                            name is Sample") into it.
+                        </p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>EBNF Grammar Specification</th>
+                                    <th>Shape of an Sample program</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="width: 50%">
+                                        <pre><code><em class="gram-nonterm">statement</em>  = ( <em class="gram-nonterm">vardecl</em> | <em class="gram-nonterm">command</em> ) <em class="gram-term">";"</em> ;</code></pre>
+                                        <pre><code><em class="gram-nonterm">vardecl</em>    = <em class="gram-term">"let"</em> <em class="gram-nonterm">identifier</em> <em class="gram-nonterm">expression</em> ;</code></pre>
+                                        <pre><code><em class="gram-nonterm">command</em>    = <em class="gram-term">"cmd"</em> <em class="gram-nonterm">identifier</em> [ <em class="gram-nonterm">parameters</em> ] ;</code></pre>
+                                        <pre><code><em class="gram-nonterm">parameters</em> = { <em class="gram-nonterm">parameter</em> <em class="gram-term">"and"</em> } <em class="gram-nonterm">parameter</em> ;</code></pre>
+                                        <pre><code><em class="gram-nonterm">parameter</em>  = <em class="gram-nonterm">number</em> | <em class="gram-nonterm">string</em> ;</code></pre>
+                                    </td>
+                                    <td style="width: 50%">
+                                        Here we declare what a single statement means. Currently there is no a wide
+                                        choice of statements. We can only handle commands,
+                                        however, would even create constant, variable declarations, or anything what we
+                                        want
+                                        to see in our own language.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <hr />
+                <h3>Sample Applications</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <pre><code><strong class="syn-keyword">program</strong> <em class="syn-identifiertoken">MyProgram1</em>
+{
+    <strong class="syn-keyword">cmd</strong> speak  <em class="syn-stringliteraltoken">"Hello!"</em>  <strong class="syn-keyword">and</strong> <em class="syn-stringliteraltoken">"UK English Female"</em>  ;
+    <strong class="syn-keyword">cmd</strong> speak  <em class="syn-stringliteraltoken">"Hello!"</em>  <strong class="syn-keyword">and</strong> <em class="syn-stringliteraltoken">"Hungarian Female"</em> ;
+    <strong class="syn-keyword">cmd</strong> dialog <em class="syn-stringliteraltoken">"Ez a szöveg lesz az ablakban."</em> ;
+}</code></pre>
+                    </div>
+                    <div class="col-md-6">
+                        <pre><code><strong class="syn-keyword">program</strong> <em class="syn-identifiertoken">MyProgram2</em>
+{
+    <strong class="syn-keyword">cmd</strong> speak  <em class="syn-stringliteraltoken">"Keress szállást."</em> <strong class="syn-keyword">and</strong> <em class="syn-stringliteraltoken">"Hungarian Female"</em> ;
+    <strong class="syn-keyword">cmd</strong> dialog <em class="syn-stringliteraltoken">"Budapest szállás"</em>               ;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

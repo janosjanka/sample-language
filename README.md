@@ -1,4 +1,4 @@
-## Sample-language
+## Sample Language
 
-You can run it here:
+You can try it out here:
 https://rawgit.com/janosjanka/sample-language/master/index.html

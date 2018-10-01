@@ -214,25 +214,20 @@ class SyntaxNode extends SyntaxItem {
 
 /**
  * Statements are the meat and bone of your application – they are the actual code
- * that executes and determines application flow and logic. Without statements,
- * an Adrienn application would not be able to do anything.
- * 
- * For example:
- *    - utasít keress "Valami jó könyvet"
+ * that executes and determines application flow and logic.
  */
 class Statement extends SyntaxNode { }
 
 /**
  * Expressions are a special sub-type of statement that represent a value.
  * As a result, expressions can usually be used in the same way a regular statement is,
- * but they can also be used in many other places where a value is expected
+ * but they can also be used in many other places where a value is expected.
  */
 class Expression extends SyntaxNode { }
 
 /**
  * Represents a parenthesized expression.
- * For example:
- *    - ( a + ( b - cos(60) ) )
+ * @example -(5 + (10 - 20))
  */
 class ParenthesizedExpression extends Expression {
     constructor(openParenToken, expression, closeParenToken, parent) {
@@ -247,12 +242,6 @@ class ParenthesizedExpression extends Expression {
 /**
  * An identifier is a name that identifies (that is, labels the identity of)
  * either a unique object or a unique class of objects.
- * 
- * For example:
- *    - utasít mutasd 10 + 20
- *  
- * The word 'mutasd' is an identifier. In this case, it identifies a function or operation
- * that must be perfomed.
  */
 class IdentifierNameSyntax extends Expression {
     constructor(token, parent) {
@@ -273,8 +262,7 @@ class ArgumentListSyntax extends Expression {
 /**
  * A literal is a notation for representing a fixed value in source code,
  * a sequence of characters that usually carry type information about itself.
- *
- * For example:
+ * @example
  *    - 012345 is a numeric literal
  *    - "text" is a string literal
  *    - 'c'    is a character literal
@@ -289,7 +277,7 @@ class LiteralExpressionSyntax extends Expression {
 
 /**
  * In mathematics, a unary operation is an operation with only one operand.
- * For example:
+ * @example
  *    - positive and negative unary operator:
  *         +30 (The result of the unary plus operator (+) is the value of its operand)
  *         -10 (The unary negation operator (–) produces the negative of its operand)
@@ -305,7 +293,7 @@ class UnaryExpression extends Expression {
 
 /**
 * Represents an expression that has a binary operator.
-* For example:
+* @example
 *    - 10 + 20 is a binary expression that has both left and right hand-side operands,
 *      and a binary operator '+'. 
 */

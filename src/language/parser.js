@@ -228,7 +228,7 @@ class Parser {
      * @returns {CommandStatement}
      */
     parseCommandStatement() {
-        const orderKeyword = this.eatToken(SyntaxKind.commandKeyword);
+        const commandKeyword = this.eatToken(SyntaxKind.commandKeyword);
         const identifier = new IdentifierNameSyntax(this.eatToken(SyntaxKind.identifierToken));
         const argumentList = this.parseArguments();
 
@@ -236,7 +236,7 @@ class Parser {
         this.eatToken(SyntaxKind.semicolonToken);
 
         // Return an AST SyntaxNode representing a command statement.
-        return new CommandStatement(orderKeyword, identifier, argumentList);
+        return new CommandStatement(commandKeyword, identifier, argumentList);
     }
 
     /**

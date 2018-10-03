@@ -29,7 +29,7 @@ class Parser {
      * @return {Boolean}
      */
     get isEOF() {
-        return this.token.kind === SyntaxKind.endOfFileToken;
+        return this.token.kind === SyntaxKind.EndOfFileToken;
     }
 
     /**
@@ -47,30 +47,34 @@ class Parser {
      */
     parseExpressionFactor() {
         switch (this.token.kind) {
-            // Parses a literal expression to an LiteralSyntax syntax node. 
-            case SyntaxKind.numericLiteralToken:
-                return new LiteralExpressionSyntax(SyntaxKind.numericLiteralExpression, this.eatToken(this.token.kind));
+            // Parse the command as an expression which can have a return value.
+            case SyntaxKind.CommandKeyword:
+                return this.parseCommandExpression();
 
-            case SyntaxKind.stringLiteralToken:
-                return new LiteralExpressionSyntax(SyntaxKind.stringLiteralExpression, this.eatToken(this.token.kind));
+            // Parses a literal expression to an LiteralSyntax syntax node. 
+            case SyntaxKind.NumericLiteralToken:
+                return new LiteralExpressionSyntax(SyntaxKind.NumericLiteralExpression, this.parseExpectedToken(this.token.kind));
+
+            case SyntaxKind.StringLiteralToken:
+                return new LiteralExpressionSyntax(SyntaxKind.StringLiteralExpression, this.parseExpectedToken(this.token.kind));
 
             // Parses an identifier expression to an IdentifierNameSyntax syntax node.
-            case SyntaxKind.identifierToken:
-                return new IdentifierNameSyntax(this.eatToken(SyntaxKind.identifierToken));
+            case SyntaxKind.IdentifierToken:
+                return new IdentifierNameSyntax(this.parseExpectedToken(SyntaxKind.IdentifierToken));
 
             // Parses a parenthesized ( ... ) expression to a parenthesized syntax node. 
-            case SyntaxKind.openParenToken:
+            case SyntaxKind.OpenParenToken:
                 return new ParenthesizedExpression(
-                    this.eatToken(SyntaxKind.openParenToken),
+                    this.parseExpectedToken(SyntaxKind.OpenParenToken),
                     this.parseExpression(),
-                    this.eatToken(SyntaxKind.closeParenToken));
+                    this.parseExpectedToken(SyntaxKind.CloseParenToken));
 
             // Parses a unary +/- expression to a unary syntax node.
-            case SyntaxKind.plusToken:
-            case SyntaxKind.minusToken: {
-                const operator = this.eatToken(this.token.kind);
+            case SyntaxKind.PlusToken:
+            case SyntaxKind.MinusToken: {
+                const operator = this.parseExpectedToken(this.token.kind);
                 return new UnaryExpression(
-                    operator.kind === SyntaxKind.plusToken ? SyntaxKind.plusToken : SyntaxKind.unaryMinusExpression,
+                    operator.kind === SyntaxKind.PlusToken ? SyntaxKind.PlusToken : SyntaxKind.UnaryMinusExpression,
                     this.parseExpressionFactor(),
                     operator);
             }
@@ -93,11 +97,11 @@ class Parser {
                 // * Mathematical multiplication expression
                 // At this point we already parsed the left-hand-side of the expression,
                 // the right-hand-side of the expression will be parsed calling the parseFactor() function again.
-                case SyntaxKind.asteriskToken: {
+                case SyntaxKind.AsteriskToken: {
                     const operator = this.token;
                     this.nextToken();
                     expression = new BinaryExpression(
-                        SyntaxKind.multiplyExpression,  // multiply
+                        SyntaxKind.MultiplyExpression,  // multiply
                         expression,                     // left-hand-side expression
                         operator,                       // *
                         this.parseExpressionFactor());  // right-hand-side expression
@@ -107,11 +111,11 @@ class Parser {
                 // / Mathematical division expression
                 // At this point we already parsed the left-hand-side of the expression,
                 // the right-hand-side of the expression will be parsed calling the parseFactor() function again.
-                case SyntaxKind.slashToken: {
+                case SyntaxKind.SlashToken: {
                     const operator = this.token;
                     this.nextToken();
                     expression = new BinaryExpression(
-                        SyntaxKind.divideExpression,    // division
+                        SyntaxKind.DivideExpression,    // division
                         expression,                     // left-hand-side expression
                         operator,                       // /
                         this.parseExpressionFactor());  // right-hand-side expression
@@ -138,11 +142,11 @@ class Parser {
                 // + Mathematical addition expression
                 // At this point we already parsed the left-hand-side of the expression,
                 // the right-hand-side of the expression will be parsed calling the parseTerm() function again.
-                case SyntaxKind.plusToken: {
+                case SyntaxKind.PlusToken: {
                     const operator = this.token;
                     this.nextToken();
                     expression = new BinaryExpression(
-                        SyntaxKind.addExpression,       // addition
+                        SyntaxKind.AddExpression,       // addition
                         expression,                     // left-hand-side expression
                         operator,                       // +
                         this.parseExpressionTerm());    // right-hand-side expression
@@ -152,11 +156,11 @@ class Parser {
                 // - Mathematical substraction expression
                 // At this point we already parsed the left-hand-side of the expression,
                 // the right-hand-side of the expression will be parsed calling the parseTerm() function again.
-                case SyntaxKind.minusToken: {
+                case SyntaxKind.MinusToken: {
                     const operator = this.token;
                     this.nextToken();
                     expression = new BinaryExpression(
-                        SyntaxKind.subtractExpression,  // substraction
+                        SyntaxKind.SubtractExpression,  // substraction
                         expression,                     // left-hand-side expression
                         operator,                       // -
                         this.parseExpressionTerm());    // right-hand-side expression (recursive parsing)
@@ -193,12 +197,12 @@ class Parser {
             // * Is there another argument?
             // * Check whether this is the end of the argument list (;).
             argumentList.push(this.parseArgument());
-            if (this.token.kind === SyntaxKind.andKeyword) {
-                this.eatToken(SyntaxKind.andKeyword);
+            if (this.token.kind === SyntaxKind.VerticalBar) {
+                this.parseExpectedToken(SyntaxKind.VerticalBar);
                 continue;
             }
-            if (this.token.kind === SyntaxKind.semicolonToken ||
-                this.token.kind === SyntaxKind.endOfFileToken) {
+            if (this.token.kind === SyntaxKind.SemicolonToken ||
+                this.token.kind === SyntaxKind.EndOfFileToken) {
                 break;
             }
         }
@@ -212,12 +216,10 @@ class Parser {
      * @returns {VarDeclStatement}
      */
     parseVarDeclStatement() {
-        const letKeyword = this.eatToken(SyntaxKind.letKeyword);
-        const identifier = new IdentifierNameSyntax(this.eatToken(SyntaxKind.identifierToken));
-        const expression = this.parseExpression();
-
-        // Eat the semicolon (;) token at the end of the statement.
-        this.eatToken(SyntaxKind.semicolonToken);
+        const letKeyword = this.parseExpectedToken(SyntaxKind.LetKeyword);
+        const identifier = new IdentifierNameSyntax(this.parseExpectedToken(SyntaxKind.IdentifierToken));
+        const expression = this.parseOptionalToken(SyntaxKind.EqualsToken) && this.parseExpression();
+        this.parseExpectedToken(SyntaxKind.SemicolonToken);
 
         // Return an AST SyntaxNode representing a variable declaration statement.
         return new VarDeclStatement(letKeyword, identifier, expression);
@@ -228,15 +230,28 @@ class Parser {
      * @returns {CommandStatement}
      */
     parseCommandStatement() {
-        const commandKeyword = this.eatToken(SyntaxKind.commandKeyword);
-        const identifier = new IdentifierNameSyntax(this.eatToken(SyntaxKind.identifierToken));
+        const commandKeyword = this.parseExpectedToken(SyntaxKind.CommandKeyword);
+        const identifier = new IdentifierNameSyntax(this.parseExpectedToken(SyntaxKind.IdentifierToken));
         const argumentList = this.parseArguments();
 
         // Eat the semicolon token (;) at the end of the statement.
-        this.eatToken(SyntaxKind.semicolonToken);
+        this.parseExpectedToken(SyntaxKind.SemicolonToken);
 
         // Return an AST SyntaxNode representing a command statement.
         return new CommandStatement(commandKeyword, identifier, argumentList);
+    }
+
+    /**
+     * Parses a command expression.
+     * @returns {CommandStatement}
+     */
+    parseCommandExpression() {
+        const commandKeyword = this.parseExpectedToken(SyntaxKind.CommandKeyword);
+        const identifier = new IdentifierNameSyntax(this.parseExpectedToken(SyntaxKind.IdentifierToken));
+        const argumentList = this.parseArguments();
+
+        // Return an AST SyntaxNode representing a command expression.
+        return new CommandExpression(commandKeyword, identifier, argumentList);
     }
 
     /**
@@ -245,10 +260,10 @@ class Parser {
      */
     parseStatement() {
         switch (this.token.kind) {
-            case SyntaxKind.letKeyword:
+            case SyntaxKind.LetKeyword:
                 return this.parseVarDeclStatement();
 
-            case SyntaxKind.commandKeyword:
+            case SyntaxKind.CommandKeyword:
                 return this.parseCommandStatement();
 
             default:
@@ -265,29 +280,29 @@ class Parser {
     parseBlock() {
         const elements = [];
 
-        this.eatToken(SyntaxKind.openBraceToken);
+        this.parseExpectedToken(SyntaxKind.OpenBraceToken);
         while (true) {
             // Exit the 'while' loop because this is the end of this block.
-            if (this.token.kind === SyntaxKind.closeBraceToken) {
+            if (this.token.kind === SyntaxKind.CloseBraceToken) {
                 break;
             }
 
             // Parse the nested block in a recursive way.
-            if (this.token.kind === SyntaxKind.openBraceToken) {
+            if (this.token.kind === SyntaxKind.OpenBraceToken) {
                 elements.push(this.parseBlock());
                 continue;
             }
 
             // This means that this block has not been terminated and
             // we run out of the tokens.
-            if (this.token.kind === SyntaxKind.endOfFileToken) {
+            if (this.token.kind === SyntaxKind.EndOfFileToken) {
                 throw new SyntaxError("Unterminated block.");
             }
 
             // Parse as statement.
             elements.push(this.parseStatement());
         }
-        this.eatToken(SyntaxKind.closeBraceToken);
+        this.parseExpectedToken(SyntaxKind.CloseBraceToken);
 
         // Return an AST SyntaxNode that represents a block with its elements (children). 
         return new BlockSyntax(elements);
@@ -300,21 +315,21 @@ class Parser {
     parseProgram() {
         this.skipWhiteSpace();
 
-        const programKeyword = this.eatToken(SyntaxKind.programKeyword);
-        const identifier = new IdentifierNameSyntax(this.eatToken(SyntaxKind.identifierToken));
+        const programKeyword = this.parseExpectedToken(SyntaxKind.ProgramKeyword);
+        const identifier = new IdentifierNameSyntax(this.parseExpectedToken(SyntaxKind.IdentifierToken));
         const block = this.parseBlock();
 
         // Eat the End-Of-File (EOF) token.
-        this.eatToken(SyntaxKind.endOfFileToken);
+        this.parseExpectedToken(SyntaxKind.EndOfFileToken);
 
         return new ProgramSyntax(programKeyword, identifier, block);
     }
 
     /** Skips all of the white-space tokens until it runs out. */
     skipWhiteSpace() {
-        while ((this.token.kind === SyntaxKind.whiteSpaceTrivia
-            || this.token.kind === SyntaxKind.endOfLineToken)
-            && this.token.kind !== SyntaxKind.endOfFileToken) {
+        while ((this.token.kind === SyntaxKind.WhiteSpaceTrivia
+            || this.token.kind === SyntaxKind.EndOfLineToken)
+            && this.token.kind !== SyntaxKind.EndOfFileToken) {
             this.token = this.lexer.next();
         }
     }
@@ -326,17 +341,30 @@ class Parser {
     }
 
     /**
-     * Eats the expected token and moves to the next token.
-     * @param {SyntaxKind} syntaxKind
-     * @returns {SyntaxToken}
+     * Moves the cursor to the next token if that matches the specified syntax kind.
+     * @param {SyntaxKind} syntaxKind Kind of the lexical element to be checked.
+     * @returns {SyntaxToken} The previous token.
      */
-    eatToken(syntaxKind) {
-        if (this.token.kind !== syntaxKind) {
-            throw new SyntaxError(
-                `${SyntaxKind[syntaxKind]} expected instead of the token '${this.token.kindText}'.`);
+    parseOptionalToken(syntaxKind) {
+        if (this.token.kind === syntaxKind) {
+            const token = this.token;
+            this.nextToken();
+            return token;
         }
-        const token = this.token;
-        this.nextToken();
-        return token;
+        return void 0;
+    }
+
+    /**
+     * Moves the cursor to the next token if that matches the specified syntax kind;
+     * otherwise, it throws a syntax error (unexpected token) exception.
+     * @param {SyntaxKind} syntaxKind Kind of the lexical element to be checked.
+     * @returns {SyntaxToken} The previous token.
+     */
+    parseExpectedToken(syntaxKind) {
+        const token = this.parseOptionalToken(syntaxKind);
+        if (token) {
+            return token;
+        }
+        throw new SyntaxError(`${SyntaxKind[syntaxKind]} expected instead of the token '${this.token.kindText}'.`);
     }
 }

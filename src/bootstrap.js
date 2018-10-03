@@ -15,12 +15,11 @@
         // You can update it how you would like to do that :-)
 
         const SampleCode = `\
-program MyProgram
-{  
-    let welcome  "Hello!"                                            ;    
-    cmd speak    welcome + " How is it going?" and "UK English Male" ;
-    cmd speak    welcome + " Hogy vagy?"       and "Hungarian Female";
-    cmd dialog   welcome                                             ;
+program MyProgram {  
+    let result;
+    let welcome = "Hello!";  
+    let result1 = cmd speak welcome + " How are you?" | "UK English Male";
+    let result2 = cmd speak welcome + " Hogy vagy?"   | "Hungarian Female";
 }`;
 
         // Create a new Application object and set it as a member of the global object

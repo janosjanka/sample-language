@@ -23,25 +23,28 @@ class Emitter {
      */
     emitExpression(expression) {
         switch (expression.kind) {
-            case SyntaxKind.numericLiteralExpression:
-            case SyntaxKind.stringLiteralExpression:
-            case SyntaxKind.identifierName:
+            case SyntaxKind.CommandExpression:
+                return this.emitCommandExpression(expression);
+
+            case SyntaxKind.NumericLiteralExpression:
+            case SyntaxKind.StringLiteralExpression:
+            case SyntaxKind.IdentifierName:
                 // Since both literals and identifiers are compatible with ECMA 6 (JavaScript) standards,
                 // we can directly pass these Sample tokens to the translated source text without extra work :-)
                 return expression.token.text;
 
-            case SyntaxKind.parenthesizedExpression:
+            case SyntaxKind.ParenthesizedExpression:
                 return `${expression.openParenToken.text}${this.emitExpression(expression.expression)}${expression.closeParenToken.text}`;
 
-            case SyntaxKind.unaryPlusExpression:
-            case SyntaxKind.unaryMinusExpression:
+            case SyntaxKind.UnaryPlusExpression:
+            case SyntaxKind.UnaryMinusExpression:
                 return `${expression.operator.text}${this.emitExpression(expression.operand)}`;
 
             // Binary expressions
-            case SyntaxKind.addExpression:
-            case SyntaxKind.subtractExpression:
-            case SyntaxKind.multiplyExpression:
-            case SyntaxKind.divideExpression:
+            case SyntaxKind.AddExpression:
+            case SyntaxKind.SubtractExpression:
+            case SyntaxKind.MultiplyExpression:
+            case SyntaxKind.DivideExpression:
                 return `${this.emitExpression(expression.left)}${expression.operator.text}${this.emitExpression(expression.right)}`;
 
             default:
@@ -67,14 +70,16 @@ class Emitter {
     emitVarDeclStatement(statement) {
         let text = "let ";
         text += statement.identifier.token.value;
-        text += " = ";
-        text += this.emitExpression(statement.expression);
+        if (statement.expression) {
+            text += " = ";
+            text += this.emitExpression(statement.expression);
+        }
         text += ";";
         return text;
     }
 
     /**
-     * Emits JavaScript source text for the specified order statement.
+     * Emits JavaScript source text for the specified command statement.
      * @param   {CommandStatement} statement
      * @returns {string}
      */
@@ -87,15 +92,28 @@ class Emitter {
     }
 
     /**
+     * Emits JavaScript source text for the specified command expression.
+     * @param   {CommandExpression} expression
+     * @returns {string}
+     */
+    emitCommandExpression(expression) {
+        let text = expression.identifier.token.value;
+        text += "(";
+        text += this.emitArguments(expression.arguments);
+        text += ")";
+        return text;
+    }
+
+    /**
      * Emits JavaScript source text for the specified statement.
      * @param   {SyntaxNode} statement
      * @returns {string}
      */
     emitStatement(statement) {
         switch (statement.kind) {
-            case SyntaxKind.varDeclStatement:
+            case SyntaxKind.VarDeclStatement:
                 return this.emitVarDeclStatement(statement);
-            case SyntaxKind.commandStatement:
+            case SyntaxKind.CommandStatement:
                 return this.emitCommandStatement(statement);
             default:
                 throw new EmitterError(`The statement '${statement.kindText}' is not supported.`);
@@ -110,7 +128,7 @@ class Emitter {
     emitBlock(block) {
         let text = "{";
         block.children.forEach(node => {
-            if (node.kind === SyntaxKind.block) {
+            if (node.kind === SyntaxKind.Block) {
                 text += this.emitBlock(node);
             }
             else {

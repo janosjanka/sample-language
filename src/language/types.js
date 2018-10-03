@@ -5,66 +5,69 @@
 
 /** Represents kind of a syntax element in the language. */
 const SyntaxKind = {
-    unknown                 : 0,      // unknown
-    endOfFileToken          : 1,      // EOF
-    endOfLineToken          : 2,      // EOL
-    whiteSpaceTrivia        : 3,      // white-spaces
+    Unknown: 0,            // unknown
+    EndOfFileToken: 1,     // EOF
+    EndOfLineToken: 2,     // EOL
+    WhiteSpaceTrivia: 3,   // white-spaces
 
     /* Punctuation */
-    openBraceToken          : 100,    // {
-    closeBraceToken         : 101,    // }
-    openParenToken          : 102,    // (
-    closeParenToken         : 103,    // (
-    semicolonToken          : 104,    // ;
-    plusToken               : 105,    // +
-    minusToken              : 106,    // -
-    asteriskToken           : 107,    // *
-    slashToken              : 108,    // /
+    OpenBraceToken: 100,    // {
+    CloseBraceToken: 101,   // }
+    OpenParenToken: 102,    // (
+    CloseParenToken: 103,   // (
+    EqualsToken: 104,       // =
+    SemicolonToken: 105,    // ;
+    PlusToken: 106,         // +
+    MinusToken: 107,        // -
+    AsteriskToken: 108,     // *
+    SlashToken: 109,        // /
+    VerticalBar: 110,       // |
 
     /* Reserved Words */
-    programKeyword          : 200,    // program
-    commandKeyword          : 201,    // cmd
-    letKeyword              : 202,    // let
-    andKeyword              : 203,    // and
+    ProgramKeyword: 200,    // program
+    CommandKeyword: 201,    // cmd
+    LetKeyword: 202,        // let
+    AndKeyword: 203,        // and
 
     /* Identifiers */
-    identifierToken         : 300,
-    numericLiteralToken     : 301,
-    stringLiteralToken      : 302,
+    IdentifierToken: 300,
+    NumericLiteralToken: 301,
+    StringLiteralToken: 302,
 
     /* Names & Type Names */
-    identifierName          : 1100,
+    IdentifierName: 1100,
 
     /* Expressions */
-    parenthesizedExpression : 1200,
-    argumentList            : 1201,
+    ParenthesizedExpression: 1200,
+    ArgumentList: 1201,
 
     /* Primary Expressions */
-    numericLiteralExpression: 1301,
-    stringLiteralExpression : 1302,
+    NumericLiteralExpression: 1301,
+    StringLiteralExpression: 1302,
 
     /* Unary Expressions */
-    unaryPlusExpression     : 1400,
-    unaryMinusExpression    : 1401,
+    UnaryPlusExpression: 1400,
+    UnaryMinusExpression: 1401,
 
     /* Binary Expressions */
-    addExpression           : 1500,
-    subtractExpression      : 1501,
-    multiplyExpression      : 1502,
-    divideExpression        : 1503,
+    AddExpression: 1500,
+    SubtractExpression: 1501,
+    MultiplyExpression: 1502,
+    DivideExpression: 1503,
 
     /* Statements */
-    program                 : 2000,
-    block                   : 2001,
-    varDeclStatement        : 2002,
-    commandStatement        : 2003
+    Program: 2000,
+    Block: 2001,
+    VarDeclStatement: 2002,
+    CommandStatement: 2003,
+    CommandExpression: 2004
 };
 
 const KeywordSyntaxKindMap = {
-    "program": SyntaxKind.programKeyword,
-    "cmd": SyntaxKind.commandKeyword,
-    "let": SyntaxKind.letKeyword,
-    "and": SyntaxKind.andKeyword
+    "program": SyntaxKind.ProgramKeyword,
+    "cmd": SyntaxKind.CommandKeyword,
+    "let": SyntaxKind.LetKeyword,
+    "and": SyntaxKind.AndKeyword
 };
 
 // Do not use "const name" because IE's Chakra engine
@@ -231,7 +234,7 @@ class Expression extends SyntaxNode { }
  */
 class ParenthesizedExpression extends Expression {
     constructor(openParenToken, expression, closeParenToken, parent) {
-        super(SyntaxKind.parenthesizedExpression, parent);
+        super(SyntaxKind.ParenthesizedExpression, parent);
         this.children.push(openParenToken, expression, closeParenToken);
     }
     get openParenToken() { return this.children[0]; }
@@ -245,7 +248,7 @@ class ParenthesizedExpression extends Expression {
  */
 class IdentifierNameSyntax extends Expression {
     constructor(token, parent) {
-        super(SyntaxKind.identifierName, parent);
+        super(SyntaxKind.IdentifierName, parent);
         this.children.push(token);
     }
     get token() { return this.children[0]; }
@@ -254,7 +257,7 @@ class IdentifierNameSyntax extends Expression {
 /** Represents a list of function arguments. */
 class ArgumentListSyntax extends Expression {
     constructor(argumentList, parent) {
-        super(SyntaxKind.argumentList, parent);
+        super(SyntaxKind.ArgumentList, parent);
         this.children.push(...argumentList);
     }
 }
@@ -311,7 +314,7 @@ class BinaryExpression extends Expression {
 
 class ProgramSyntax extends Statement {
     constructor(adriennKeyword, identifier, block) {
-        super(SyntaxKind.program);
+        super(SyntaxKind.Program);
         this.children.push(adriennKeyword, identifier, block);
     }
     get keyword() { return this.children[0]; }
@@ -321,16 +324,17 @@ class ProgramSyntax extends Statement {
 
 class BlockSyntax extends Statement {
     constructor(elements) {
-        super(SyntaxKind.block);
+        super(SyntaxKind.Block);
         this.children.push(...elements);
     }
 }
 
 /** Represents a constant declaration expression. */
 class VarDeclStatement extends Statement {
-    constructor(memorizeKeyword, identifier, expression) {
-        super(SyntaxKind.varDeclStatement, parent);
-        this.children.push(memorizeKeyword, identifier, expression);
+    constructor(keyword, identifier, expression) {
+        super(SyntaxKind.VarDeclStatement, parent);
+        this.children.push(keyword, identifier);
+        expression && this.children.push(expression);
     }
     get keyword() { return this.children[0]; }
     get identifier() { return this.children[1]; }
@@ -339,7 +343,17 @@ class VarDeclStatement extends Statement {
 
 class CommandStatement extends Statement {
     constructor(keyword, identifier, argumentList, parent) {
-        super(SyntaxKind.commandStatement, parent);
+        super(SyntaxKind.CommandStatement, parent);
+        this.children.push(keyword, identifier, argumentList);
+    }
+    get keyword() { return this.children[0]; }
+    get identifier() { return this.children[1]; }
+    get arguments() { return this.children[2]; }
+}
+
+class CommandExpression extends Expression {
+    constructor(keyword, identifier, argumentList, parent) {
+        super(SyntaxKind.CommandExpression, parent);
         this.children.push(keyword, identifier, argumentList);
     }
     get keyword() { return this.children[0]; }

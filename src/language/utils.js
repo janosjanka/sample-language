@@ -4,34 +4,34 @@
 "use strict";
 
 const CharCodes = {
-    nullCharacter: 0,
-    maxAsciiCharacter: 0x7F,
+    NullCharacter: 0,
+    MaxAsciiCharacter: 0x7F,
 
-    lineFeed: 0x0A,              // \n
-    carriageReturn: 0x0D,        // \r
-    lineSeparator: 0x2028,
+    LineFeed: 0x0A,              // \n
+    CarriageReturn: 0x0D,        // \r
+    LineSeparator: 0x2028,
     paragraphSeparator: 0x2029,
-    nextLine: 0x0085,
+    NextLine: 0x0085,
 
     // Unicode 3.0 space characters
-    space: 0x0020,   // " "
-    nonBreakingSpace: 0x00A0,   //
-    enQuad: 0x2000,
-    emQuad: 0x2001,
-    enSpace: 0x2002,
-    emSpace: 0x2003,
-    threePerEmSpace: 0x2004,
-    fourPerEmSpace: 0x2005,
-    sixPerEmSpace: 0x2006,
-    figureSpace: 0x2007,
-    punctuationSpace: 0x2008,
-    thinSpace: 0x2009,
-    hairSpace: 0x200A,
-    zeroWidthSpace: 0x200B,
-    narrowNoBreakSpace: 0x202F,
-    ideographicSpace: 0x3000,
-    mathematicalSpace: 0x205F,
-    ogham: 0x1680,
+    Space: 0x0020,   // " "
+    NonBreakingSpace: 0x00A0,   //
+    EnQuad: 0x2000,
+    EmQuad: 0x2001,
+    EnSpace: 0x2002,
+    EmSpace: 0x2003,
+    ThreePerEmSpace: 0x2004,
+    FourPerEmSpace: 0x2005,
+    SixPerEmSpace: 0x2006,
+    FigureSpace: 0x2007,
+    PunctuationSpace: 0x2008,
+    ThinSpace: 0x2009,
+    HairSpace: 0x200A,
+    ZeroWidthSpace: 0x200B,
+    NarrowNoBreakSpace: 0x202F,
+    IdeographicSpace: 0x3000,
+    MathematicalSpace: 0x205F,
+    Ogham: 0x1680,
 
     _: 0x5F,
     $: 0x24,
@@ -121,42 +121,42 @@ const CharCodes = {
     Ü: 0xDC,
     Ű: 0x170,
 
-    ampersand: 0x26,             // &
-    asterisk: 0x2A,              // *
-    at: 0x40,                    // @
-    backslash: 0x5C,             // \
-    backtick: 0x60,              // `
-    bar: 0x7C,                   // |
-    caret: 0x5E,                 // ^
-    closeBrace: 0x7D,            // }
-    closeBracket: 0x5D,          // ]
-    closeParen: 0x29,            // )
-    colon: 0x3A,                 // :
-    comma: 0x2C,                 // ,
-    dot: 0x2E,                   // .
-    doubleQuote: 0x22,           // "
-    equals: 0x3D,                // =
-    exclamation: 0x21,           // !
-    greaterThan: 0x3E,           // >
-    hash: 0x23,                  // #
-    lessThan: 0x3C,              // <
-    minus: 0x2D,                 // -
-    openBrace: 0x7B,             // {
-    openBracket: 0x5B,           // [
-    openParen: 0x28,             // (
-    percent: 0x25,               // %
-    plus: 0x2B,                  // +
-    question: 0x3F,              // ?
-    semicolon: 0x3B,             // ;
-    singleQuote: 0x27,           // '
-    slash: 0x2F,                 // /
-    tilde: 0x7E,                 // ~
+    Ampersand: 0x26,             // &
+    Asterisk: 0x2A,              // *
+    At: 0x40,                    // @
+    Backslash: 0x5C,             // \
+    Backtick: 0x60,              // `
+    Bar: 0x7C,                   // |
+    Caret: 0x5E,                 // ^
+    CloseBrace: 0x7D,            // }
+    CloseBracket: 0x5D,          // ]
+    CloseParen: 0x29,            // )
+    Colon: 0x3A,                 // :
+    Comma: 0x2C,                 // ,
+    Dot: 0x2E,                   // .
+    DoubleQuote: 0x22,           // "
+    Equals: 0x3D,                // =
+    Exclamation: 0x21,           // !
+    GreaterThan: 0x3E,           // >
+    Hash: 0x23,                  // #
+    LessThan: 0x3C,              // <
+    Minus: 0x2D,                 // -
+    OpenBrace: 0x7B,             // {
+    OpenBracket: 0x5B,           // [
+    OpenParen: 0x28,             // (
+    Percent: 0x25,               // %
+    Plus: 0x2B,                  // +
+    Question: 0x3F,              // ?
+    Semicolon: 0x3B,             // ;
+    SingleQuote: 0x27,           // '
+    Slash: 0x2F,                 // /
+    Tilde: 0x7E,                 // ~
 
-    backspace: 0x08,             // \b
-    formFeed: 0x0C,              // \f
-    byteOrderMark: 0xFEFF,
-    tab: 0x09,                   // \t
-    verticalTab: 0x0B,           // \v
+    Backspace: 0x08,             // \b
+    FormFeed: 0x0C,              // \f
+    ByteOrderMark: 0xFEFF,
+    Tab: 0x09,                   // \t
+    VerticalTab: 0x0B,           // \v
 };
 
 class StrUtils {
@@ -168,18 +168,18 @@ class StrUtils {
     static isWhiteSpaceSingleLine(ch) {
         // Note: nextLine is in the Zs space, and should be considered to be a whitespace.
         // It is explicitly not a line-break as it isn't in the exact set specified by EcmaScript.
-        return ch === CharCodes.space
-            || ch === CharCodes.tab
-            || ch === CharCodes.verticalTab
-            || ch === CharCodes.formFeed
-            || ch === CharCodes.nonBreakingSpace
-            || ch === CharCodes.nextLine
-            || ch === CharCodes.ogham
-            || ch >= CharCodes.enQuad && ch <= CharCodes.zeroWidthSpace
-            || ch === CharCodes.narrowNoBreakSpace
-            || ch === CharCodes.mathematicalSpace
-            || ch === CharCodes.ideographicSpace
-            || ch === CharCodes.byteOrderMark;
+        return ch === CharCodes.Space
+            || ch === CharCodes.Tab
+            || ch === CharCodes.VerticalTab
+            || ch === CharCodes.FormFeed
+            || ch === CharCodes.NonBreakingSpace
+            || ch === CharCodes.NextLine
+            || ch === CharCodes.Ogham
+            || ch >= CharCodes.EnQuad && ch <= CharCodes.ZeroWidthSpace
+            || ch === CharCodes.NarrowNoBreakSpace
+            || ch === CharCodes.MathematicalSpace
+            || ch === CharCodes.IdeographicSpace
+            || ch === CharCodes.ByteOrderMark;
     }
 
     static isLineBreak(ch) {
@@ -193,9 +193,9 @@ class StrUtils {
         //     \u2029              Paragraph separator     <PS>
         // Only the characters in Table 3 are treated as line terminators. Other new line or line
         // breaking characters are treated as white space but not as line terminators.
-        return ch === CharCodes.lineFeed
-            || ch === CharCodes.carriageReturn
-            || ch === CharCodes.lineSeparator
+        return ch === CharCodes.LineFeed
+            || ch === CharCodes.CarriageReturn
+            || ch === CharCodes.LineSeparator
             || ch === CharCodes.paragraphSeparator;
     }
 
@@ -209,7 +209,7 @@ class StrUtils {
         return this.isLetter(ch)
             || ch >= CharCodes._0 && ch <= CharCodes._9
             || ch === CharCodes._
-            || ch > CharCodes.maxAsciiCharacter;
+            || ch > CharCodes.MaxAsciiCharacter;
     }
 
     static isLetterOrDigit(ch) {
@@ -217,7 +217,7 @@ class StrUtils {
             || this.isDigit(ch);
     }
 
-    static isLetter(ch) {        
+    static isLetter(ch) {
         return ch >= CharCodes.A && ch <= CharCodes.Z
             || ch >= CharCodes.a && ch <= CharCodes.z
             || ch === CharCodes.á || ch === CharCodes.Á

@@ -34,80 +34,92 @@ class Lexer {
 
         // Check whether the cursor is standing at the end of the source text.
         if (this.pos > this.lastPos) {
-            token.kind = SyntaxKind.endOfFileToken;
+            token.kind = SyntaxKind.EndOfFileToken;
             return token;
         }
 
         let ch;
         switch (ch = this.source.charCodeAt(this.pos)) {
-            case CharCodes.lineFeed:
-            case CharCodes.carriageReturn:
+            case CharCodes.LineFeed:
+            case CharCodes.CarriageReturn:
                 this.scanEndOfLine(token);
                 break;
 
-            case CharCodes.tab:
-            case CharCodes.verticalTab:
-            case CharCodes.formFeed:
-            case CharCodes.space:
+            case CharCodes.Tab:
+            case CharCodes.VerticalTab:
+            case CharCodes.FormFeed:
+            case CharCodes.Space:
                 this.scanWhiteSpaceTrivia(token);
                 break;
 
-            case CharCodes.doubleQuote:
-            case CharCodes.singleQuote:
+            case CharCodes.DoubleQuote:
+            case CharCodes.SingleQuote:
                 this.scanStringLiteral(token);
                 break;
 
-            case CharCodes.semicolon:
+            case CharCodes.Equals:
                 this.pos++;
-                token.kind = SyntaxKind.semicolonToken;
+                token.kind = SyntaxKind.EqualsToken;
+                token.text = "=";
+                break;
+
+            case CharCodes.Semicolon:
+                this.pos++;
+                token.kind = SyntaxKind.SemicolonToken;
                 token.text = ";";
                 break;
 
-            case CharCodes.plus:
+            case CharCodes.Plus:
                 this.pos++;
-                token.kind = SyntaxKind.plusToken;
+                token.kind = SyntaxKind.PlusToken;
                 token.text = "+";
                 break;
 
-            case CharCodes.minus:
+            case CharCodes.Minus:
                 this.pos++;
-                token.kind = SyntaxKind.minusToken;
+                token.kind = SyntaxKind.MinusToken;
                 token.text = "-";
                 break;
 
-            case CharCodes.asterisk:
+            case CharCodes.Asterisk:
                 this.pos++;
-                token.kind = SyntaxKind.asteriskToken;
+                token.kind = SyntaxKind.AsteriskToken;
                 token.text = "*";
                 break;
 
-            case CharCodes.slash:
+            case CharCodes.Slash:
                 this.pos++;
-                token.kind = SyntaxKind.slashToken;
+                token.kind = SyntaxKind.SlashToken;
                 token.text = "/";
                 break;
 
-            case CharCodes.openParen:
+            case CharCodes.Bar:
                 this.pos++;
-                token.kind = SyntaxKind.openParenToken;
+                token.kind = SyntaxKind.VerticalBar;
+                token.text = "|";
+                break;
+
+            case CharCodes.OpenParen:
+                this.pos++;
+                token.kind = SyntaxKind.OpenParenToken;
                 token.text = "(";
                 break;
 
-            case CharCodes.closeParen:
+            case CharCodes.CloseParen:
                 this.pos++;
-                token.kind = SyntaxKind.closeParenToken;
+                token.kind = SyntaxKind.CloseParenToken;
                 token.text = ")";
                 break;
 
-            case CharCodes.openBrace:
+            case CharCodes.OpenBrace:
                 this.pos++;
-                token.kind = SyntaxKind.openBraceToken;
+                token.kind = SyntaxKind.OpenBraceToken;
                 token.text = "{";
                 break;
 
-            case CharCodes.closeBrace:
+            case CharCodes.CloseBrace:
                 this.pos++;
-                token.kind = SyntaxKind.closeBraceToken;
+                token.kind = SyntaxKind.CloseBraceToken;
                 token.text = "}";
                 break;
 
@@ -222,9 +234,9 @@ class Lexer {
      * @param  {SyntaxToken} token
      */
     scanEndOfLine(token) {
-        this.pos += this.source.charCodeAt(this.pos) === CharCodes.carriageReturn
-            && this.source.charCodeAt(this.pos + 1) === CharCodes.lineFeed ? 2 : 1;
-        token.kind = SyntaxKind.endOfLineToken;
+        this.pos += this.source.charCodeAt(this.pos) === CharCodes.CarriageReturn
+            && this.source.charCodeAt(this.pos + 1) === CharCodes.LineFeed ? 2 : 1;
+        token.kind = SyntaxKind.EndOfLineToken;
     }
 
     /**
@@ -234,7 +246,7 @@ class Lexer {
     scanWhiteSpaceTrivia(token) {
         const tokenStartPos = this.pos++;
         while (this.pos <= this.lastPos && StrUtils.isWhiteSpaceSingleLine(this.source.charCodeAt(this.pos))) this.pos++;
-        token.kind = SyntaxKind.whiteSpaceTrivia;
+        token.kind = SyntaxKind.WhiteSpaceTrivia;
         token.text = this.source.substring(tokenStartPos, this.pos);
     }
 
@@ -245,11 +257,11 @@ class Lexer {
     scanNumericLiteral(token) {
         const tokenStartPos = this.pos++;
         while (this.pos <= this.lastPos && StrUtils.isDigit(this.source.charCodeAt(this.pos))) this.pos++;
-        if (this.source.charCodeAt(this.pos) === CharCodes.dot) {
+        if (this.source.charCodeAt(this.pos) === CharCodes.Dot) {
             this.pos++;
             while (this.pos <= this.lastPos && StrUtils.isDigit(this.source.charCodeAt(this.pos))) this.pos++;
         }
-        token.kind = SyntaxKind.numericLiteralToken;
+        token.kind = SyntaxKind.NumericLiteralToken;
         token.text = this.source.substring(tokenStartPos, this.pos);
         token.value = +token.text;
     }
@@ -264,7 +276,7 @@ class Lexer {
         while (this.pos <= this.lastPos && this.source.charCodeAt(this.pos) !== openQuoteChar) this.pos++;
         if (this.pos > this.lastPos) throw new SyntaxError("Unterminated string literal.");
         this.pos++;
-        token.kind = SyntaxKind.stringLiteralToken;
+        token.kind = SyntaxKind.StringLiteralToken;
         token.text = this.source.substring(tokenStartPos, this.pos);
         token.value = this.source.substring(tokenStartPos + 1, this.pos - 1);
     }
@@ -283,7 +295,7 @@ class Lexer {
             if (!StrUtils.isIdentifierStartPart(firstChar)) {
                 throw new SyntaxError(`Invalid identifier: '${token.text}'.`);
             }
-            token.kind = SyntaxKind.identifierToken;
+            token.kind = SyntaxKind.IdentifierToken;
         }
     }
 }

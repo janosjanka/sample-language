@@ -109,7 +109,7 @@ class Application {
 </div>`);
 
             // We do it because we want to display the EOF token too.
-            if (token.kind === SyntaxKind.endOfFileToken) {
+            if (token.kind === SyntaxKind.EndOfFileToken) {
                 break;
             }
         }

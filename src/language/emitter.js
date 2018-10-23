@@ -23,8 +23,8 @@ class Emitter {
      */
     emitExpression(expression) {
         switch (expression.kind) {
-            case SyntaxKind.CommandExpression:
-                return this.emitCommandExpression(expression);
+            case SyntaxKind.InvocationExpression:
+                return this.emitInvocationExpression(expression);
 
             case SyntaxKind.NumericLiteralExpression:
             case SyntaxKind.StringLiteralExpression:
@@ -79,28 +79,18 @@ class Emitter {
     }
 
     /**
-     * Emits JavaScript source text for the specified command statement.
-     * @param   {CommandStatement} statement
+     * Emits JavaScript source text for the specified invocation expression.
+     * @param   {InvocationExpression} expression
      * @returns {string}
      */
-    emitCommandStatement(statement) {
-        let text = statement.identifier.token.value;
-        text += "(";
-        text += this.emitArguments(statement.arguments);
-        text += ");";
-        return text;
-    }
-
-    /**
-     * Emits JavaScript source text for the specified command expression.
-     * @param   {CommandExpression} expression
-     * @returns {string}
-     */
-    emitCommandExpression(expression) {
+    emitInvocationExpression(expression) {
         let text = expression.identifier.token.value;
         text += "(";
         text += this.emitArguments(expression.arguments);
         text += ")";
+        if (expression.isParentKind(SyntaxKind.Block)) {
+            text += ";";
+        }
         return text;
     }
 
@@ -113,8 +103,8 @@ class Emitter {
         switch (statement.kind) {
             case SyntaxKind.VarDeclStatement:
                 return this.emitVarDeclStatement(statement);
-            case SyntaxKind.CommandStatement:
-                return this.emitCommandStatement(statement);
+            case SyntaxKind.InvocationExpression:
+                return this.emitInvocationExpression(statement);
             default:
                 throw new EmitterError(`The statement '${statement.kindText}' is not supported.`);
         }

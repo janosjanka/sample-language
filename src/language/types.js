@@ -25,7 +25,7 @@ const SyntaxKind = {
 
     /* Reserved Words */
     ProgramKeyword: 200,    // program
-    CommandKeyword: 201,    // cmd
+    CallKeyword: 201,       // call
     LetKeyword: 202,        // let
     AndKeyword: 203,        // and
 
@@ -59,13 +59,12 @@ const SyntaxKind = {
     Program: 2000,
     Block: 2001,
     VarDeclStatement: 2002,
-    CommandStatement: 2003,
-    CommandExpression: 2004
+    InvocationExpression: 2003
 };
 
 const KeywordSyntaxKindMap = {
     "program": SyntaxKind.ProgramKeyword,
-    "cmd": SyntaxKind.CommandKeyword,
+    "call": SyntaxKind.CallKeyword,
     "let": SyntaxKind.LetKeyword,
     "and": SyntaxKind.AndKeyword
 };
@@ -128,6 +127,15 @@ class SyntaxItem {
      */
     get kindText() {
         return SyntaxKind[this.kind] || "unknown";
+    }
+
+    /**
+     * Checks whether kind of the parent is the specified one.
+     * @param   {SyntaxKind} kind
+     * @returns {boolean}
+     */
+    isParentKind(kind) {
+        return this.parent && this.parent.kind === kind;
     }
 
     /**
@@ -310,8 +318,6 @@ class BinaryExpression extends Expression {
     get right() { return this.children[2]; }
 }
 
-// Statements
-
 class ProgramSyntax extends Statement {
     constructor(adriennKeyword, identifier, block) {
         super(SyntaxKind.Program);
@@ -329,7 +335,6 @@ class BlockSyntax extends Statement {
     }
 }
 
-/** Represents a constant declaration expression. */
 class VarDeclStatement extends Statement {
     constructor(keyword, identifier, expression) {
         super(SyntaxKind.VarDeclStatement, parent);
@@ -341,19 +346,9 @@ class VarDeclStatement extends Statement {
     get expression() { return this.children[2]; }
 }
 
-class CommandStatement extends Statement {
+class InvocationExpression extends Expression {
     constructor(keyword, identifier, argumentList, parent) {
-        super(SyntaxKind.CommandStatement, parent);
-        this.children.push(keyword, identifier, argumentList);
-    }
-    get keyword() { return this.children[0]; }
-    get identifier() { return this.children[1]; }
-    get arguments() { return this.children[2]; }
-}
-
-class CommandExpression extends Expression {
-    constructor(keyword, identifier, argumentList, parent) {
-        super(SyntaxKind.CommandExpression, parent);
+        super(SyntaxKind.InvocationExpression, parent);
         this.children.push(keyword, identifier, argumentList);
     }
     get keyword() { return this.children[0]; }

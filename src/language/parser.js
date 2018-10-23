@@ -47,9 +47,9 @@ class Parser {
      */
     parseExpressionFactor() {
         switch (this.token.kind) {
-            // Parse the command as an expression which can have a return value.
-            case SyntaxKind.CommandKeyword:
-                return this.parseCommandExpression();
+            // Parse an invocation expression which can be used as an R-Value.
+            case SyntaxKind.CallKeyword:
+                return this.parseInvocationExpression();
 
             // Parses a literal expression to an LiteralSyntax syntax node. 
             case SyntaxKind.NumericLiteralToken:
@@ -216,42 +216,27 @@ class Parser {
      * @returns {VarDeclStatement}
      */
     parseVarDeclStatement() {
-        const letKeyword = this.parseExpectedToken(SyntaxKind.LetKeyword);
+        const keyword = this.parseExpectedToken(SyntaxKind.LetKeyword);
         const identifier = new IdentifierNameSyntax(this.parseExpectedToken(SyntaxKind.IdentifierToken));
         const expression = this.parseOptionalToken(SyntaxKind.EqualsToken) && this.parseExpression();
         this.parseExpectedToken(SyntaxKind.SemicolonToken);
 
         // Return an AST SyntaxNode representing a variable declaration statement.
-        return new VarDeclStatement(letKeyword, identifier, expression);
+        return new VarDeclStatement(keyword, identifier, expression);
     }
 
     /**
-     * Parses a command statement.
-     * @returns {CommandStatement}
+     * Parses an invocation expression.
+     * @returns {InvocationExpression}
      */
-    parseCommandStatement() {
-        const commandKeyword = this.parseExpectedToken(SyntaxKind.CommandKeyword);
+    parseInvocationExpression(checkSemicolon) {
+        const keyword = this.parseExpectedToken(SyntaxKind.CallKeyword);
         const identifier = new IdentifierNameSyntax(this.parseExpectedToken(SyntaxKind.IdentifierToken));
         const argumentList = this.parseArguments();
+        checkSemicolon && this.parseExpectedToken(SyntaxKind.SemicolonToken);
 
-        // Eat the semicolon token (;) at the end of the statement.
-        this.parseExpectedToken(SyntaxKind.SemicolonToken);
-
-        // Return an AST SyntaxNode representing a command statement.
-        return new CommandStatement(commandKeyword, identifier, argumentList);
-    }
-
-    /**
-     * Parses a command expression.
-     * @returns {CommandStatement}
-     */
-    parseCommandExpression() {
-        const commandKeyword = this.parseExpectedToken(SyntaxKind.CommandKeyword);
-        const identifier = new IdentifierNameSyntax(this.parseExpectedToken(SyntaxKind.IdentifierToken));
-        const argumentList = this.parseArguments();
-
-        // Return an AST SyntaxNode representing a command expression.
-        return new CommandExpression(commandKeyword, identifier, argumentList);
+        // Return an AST SyntaxNode representing an invocation expression.
+        return new InvocationExpression(keyword, identifier, argumentList);
     }
 
     /**
@@ -262,10 +247,8 @@ class Parser {
         switch (this.token.kind) {
             case SyntaxKind.LetKeyword:
                 return this.parseVarDeclStatement();
-
-            case SyntaxKind.CommandKeyword:
-                return this.parseCommandStatement();
-
+            case SyntaxKind.CallKeyword:
+                return this.parseInvocationExpression(true);
             default:
                 // Something is wrong. The user forgot to write at least command :-)
                 throw new SyntaxError(`A statement expected instead of the token '${this.token.kindText}'.`);
@@ -315,14 +298,14 @@ class Parser {
     parseProgram() {
         this.skipWhiteSpace();
 
-        const programKeyword = this.parseExpectedToken(SyntaxKind.ProgramKeyword);
+        const keyword = this.parseExpectedToken(SyntaxKind.ProgramKeyword);
         const identifier = new IdentifierNameSyntax(this.parseExpectedToken(SyntaxKind.IdentifierToken));
         const block = this.parseBlock();
 
         // Eat the End-Of-File (EOF) token.
         this.parseExpectedToken(SyntaxKind.EndOfFileToken);
 
-        return new ProgramSyntax(programKeyword, identifier, block);
+        return new ProgramSyntax(keyword, identifier, block);
     }
 
     /** Skips all of the white-space tokens until it runs out. */

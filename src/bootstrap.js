@@ -16,10 +16,10 @@
 
         const SampleCode = `\
 program MyProgram {  
-    let result;
-    let welcome = "Hello!";  
-    let result1 = cmd speak welcome + " How are you?" | "UK English Male";
-    let result2 = cmd speak welcome + " Hogy vagy?"   | "Hungarian Female";
+    let welcome = "Hello";
+    let promise = call speak "Hello!" | "UK English Male";
+    call speak welcome + " How are you?" | "UK English Female";
+    call speak welcome + " Hogy vagy?" | "Hungarian Female";
 }`;
 
         // Create a new Application object and set it as a member of the global object
